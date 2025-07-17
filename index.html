@@ -1,14 +1,464 @@
 <!DOCTYPE html>
-<html>
-<script src="//d3js.org/d3.v3.min.js"></script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U.S. Public Library Physical and Digital Collections in 2022</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/d3-annotation/d3-annotation.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #1a472a;
+        }
+        h2 {
+            color: #397a5b;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .slide {
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: left;
+            padding: 8px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            pointer-events: none;
+            opacity: 0;
+            font-size: 12px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        .chart-container {
+            display: flex;
+            align-items: flex-start; /* Align items to the top */
+        }
+        .scatter-plot {
+            flex-grow: 1; /* Take up available space */
+            border: 1px solid #eee;
+            margin-right: 20px;
+        }
+        .filters {
+            width: 200px; /* Fixed width for filters */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
 <body>
-    <h1 style="text-align:center;">U.S. Public Library Physical and Digital Collections in 2022</h1>
-    <h3 style="text-align:center;">Kelda Habing, CS 416: Data Visualization, Summer 2025, Narrative Visualization Project</h3>
-    <p style="margin: 20px 200px 200px 20px;">
-        The slides of this narrative visualization summarize the physical and digital collections 
-        of public libraries in U.S. states, the District of Columbia, and outlying territories. 
-        Physical collections include items such as books, journals, DVDs, or CDs.
-        Digital collections include items such as e-books and downloadable audio and video content.
-        Visualizations were created using the 2022 findings from the Institute of Museum and Library Services (IMLS) 
-        Public Libraries Survey (PLS) which are available <a href="ttps://www.imls.gov/research-evaluation/surveys/public-libraries-survey-pls">here.</a>
-    </p>
+    <div class="container">
+        <h1>U.S. Public Library Physical and Digital Collections in 2022</h1>
+        <p>Kelda Habing, CS 416: Data Visualization, Summer 2025, Narrative Visualization Project</p>
+        <p>The following slides of this narrative visualization summarize the physical and digital collections of public libraries in U.S. states, the District of Columbia, and outlying territories. Physical collections include items such as books, journals, DVDs, or CDs. Digital collections include items such as e-books and downloadable audio and video content. Visualizations were created using the 2022 findings from the Institute of Museum and Library Services (IMLS) Public Libraries Survey (PLS) which are available here: <a href="https://www.imls.gov/research-evaluation/surveys/public-libraries-survey-pls" target="_blank">https://www.imls.gov/research-evaluation/surveys/public-libraries-survey-pls</a>.</p>
+        <p>Click Start below to view slides.</p>
+        <div class="controls">
+            <button id="startButton">Start</button>
+        </div>
+
+        <div id="slide1" class="slide">
+            <h2>Physical and Digital Collection Materials</h2>
+            <p>The scatter plot below shows percentages of physical and digital library collections materials in U.S. states and territories. Hover over each point to see specific information about the state’s collections. Click on a state name or region name on the right to select a specific state or region. Click Next to go to the next slide.</p>
+            <div class="chart-container">
+                <svg class="scatter-plot" id="chart1" width="600" height="400"></svg>
+                <div class="filters">
+                    <label for="stateFilter1">Filter by State:</label>
+                    <select id="stateFilter1">
+                        <option value="All">All</option>
+                    </select>
+                    <label for="regionFilter1">Filter by Region:</label>
+                    <select id="regionFilter1">
+                        <option value="All">All</option>
+                    </select>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="nextButton1">Next</button>
+            </div>
+        </div>
+
+        <div id="slide2" class="slide">
+            <h2>Physical and Digital Collection Circulation</h2>
+            <p>The scatter plot below shows percentages of the circulation of library physical and digital collections in U.S. states and territories. Hover over each point to see specific information about the state’s collections. Click on a state name or region name on the right to select a specific state or region. Click Next to go to the next slide.</p>
+            <div class="chart-container">
+                <svg class="scatter-plot" id="chart2" width="600" height="400"></svg>
+                <div class="filters">
+                    <label for="stateFilter2">Filter by State:</label>
+                    <select id="stateFilter2">
+                        <option value="All">All</option>
+                    </select>
+                    <label for="regionFilter2">Filter by Region:</label>
+                    <select id="regionFilter2">
+                        <option value="All">All</option>
+                    </select>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="nextButton2">Next</button>
+            </div>
+        </div>
+
+        <div id="slide3" class="slide">
+            <h2>Physical and Digital Collection Expenditures</h2>
+            <p>The scatter plot below shows percentages of expenditures on library physical and digital collections in U.S. states and territories. Hover over each point to see specific information about the state’s collections. Click on a state name or region name on the right to select a specific state or region. Click Next to finish the narrative.</p>
+            <div class="chart-container">
+                <svg class="scatter-plot" id="chart3" width="600" height="400"></svg>
+                <div class="filters">
+                    <label for="stateFilter3">Filter by State:</label>
+                    <select id="stateFilter3">
+                        <option value="All">All</option>
+                    </select>
+                    <label for="regionFilter3">Filter by Region:</label>
+                    <select id="regionFilter3">
+                        <option value="All">All</option>
+                    </select>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="nextButton3">Next</button>
+            </div>
+        </div>
+
+        <div id="conclusion" class="slide">
+            <h2>Conclusion</h2>
+            <p>The previous visualizations show that many libraries across the U.S. are prioritizing digital content over physical content. Future investigations on this topic could investigate differences across library size or location in urban, suburban and rural communities and the kinds of digital content that public libraries collect and circulate.</p>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top: 20px;">
+        <h2>Essay Responses</h2>
+        <h3>Messaging:</h3>
+        <p>[leave empty for now]</p>
+        <h3>Narrative Structure:</h3>
+        <p>[leave empty for now]</p>
+        <h3>Visual Structure:</h3>
+        <p>[leave empty for now]</p>
+        <h3>Scenes:</h3>
+        <p>[leave empty for now]</p>
+        <h3>Annotations:</h3>
+        <p>[leave empty for now]</p>
+        <h3>Parameters:</h3>
+        <p>[leave empty for now]</p>
+        <h3>Triggers:</h3>
+        <p>[leave empty for now]</p>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = ['slide1', 'slide2', 'slide3', 'conclusion'];
+        let data; // To store the loaded data
+
+        // Parameters for the visualization
+        const params = {
+            selectedState: "All",
+            selectedRegion: "All",
+            activeSlide: 0
+        };
+
+        // Tooltip div
+        const tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        document.getElementById('startButton').addEventListener('click', () => {
+            document.getElementById('startButton').style.display = 'none';
+            document.querySelector('.container .controls').style.display = 'none'; // Hide the initial controls
+            showSlide(0);
+        });
+
+        document.getElementById('nextButton1').addEventListener('click', () => showSlide(1));
+        document.getElementById('nextButton2').addEventListener('click', () => showSlide(2));
+        document.getElementById('nextButton3').addEventListener('click', () => showSlide(3)); // This will show the conclusion
+
+        function showSlide(index) {
+            slides.forEach((slideId, i) => {
+                document.getElementById(slideId).style.display = (i === index) ? 'block' : 'none';
+            });
+            params.activeSlide = index;
+            if (index < 3) { // Only render chart if it's a visualization slide
+                renderChart(index);
+            }
+        }
+
+        // Load data and initialize
+        // UPDATED: Using the direct GitHub link for the CSV
+        d3.csv("https://raw.githubusercontent.com/khabing2/CS416NarrativeVisualization/2c7f98158419bcb7a34ea59545d19fc0bf25068b/state_sums.csv").then(loadedData => {
+            data = loadedData;
+            // Convert necessary columns to numbers
+            data.forEach(d => {
+                d.PHYSEXP = +d.PHYSEXP;
+                d.DIGEXP = +d.DIGEXP;
+                d.TOTEXP = +d.TOTEXP;
+                d.PERPHYSEXP = +d.PERPHYSEXP;
+                d.PERDIGEXP = +d.PERDIGEXP;
+                d.TOTPHYSCOLL = +d.TOTPHYSCOLL;
+                d.TOTDIGCOLL = +d.TOTDIGCOLL;
+                d.TOTCOLL = +d.TOTCOLL;
+                d.PERPHYSCOLL = +d.PERPHYSCOLL;
+                d.PERDIGCOLL = +d.PERDIGCOLL;
+                d.PHYSCIR = +d.PHYSCIR;
+                d.DIGCIR = +d.DIGCIR;
+                d.TOTCIR = +d.TOTCIR;
+                d.PERPHYSCIR = +d.PERPHYSCIR;
+                d.PERDIGCIR = +d.PERDIGCIR;
+            });
+
+            // Populate filters
+            const states = ["All", ...new Set(data.map(d => d.STATE))].sort();
+            const regions = ["All", ...new Set(data.map(d => d.REGION))].sort();
+
+            for (let i = 1; i <= 3; i++) {
+                const stateFilter = d3.select(`#stateFilter${i}`);
+                stateFilter.selectAll("option")
+                    .data(states)
+                    .enter()
+                    .append("option")
+                    .attr("value", d => d)
+                    .text(d => d);
+
+                const regionFilter = d3.select(`#regionFilter${i}`);
+                regionFilter.selectAll("option")
+                    .data(regions)
+                    .enter()
+                    .append("option")
+                    .attr("value", d => d)
+                    .text(d => d);
+
+                stateFilter.on("change", function() {
+                    params.selectedState = this.value;
+                    params.selectedRegion = "All"; // Reset region filter
+                    d3.select(`#regionFilter${i}`).property("value", "All");
+                    renderChart(i - 1);
+                });
+
+                regionFilter.on("change", function() {
+                    params.selectedRegion = this.value;
+                    params.selectedState = "All"; // Reset state filter
+                    d3.select(`#stateFilter${i}`).property("value", "All");
+                    renderChart(i - 1);
+                });
+            }
+        }).catch(error => {
+            console.error("Error loading the data:", error);
+        });
+
+        function renderChart(slideIndex) {
+            const margin = { top: 40, right: 30, bottom: 60, left: 70 }; // Increased top margin for title
+            const width = 600 - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+
+            const svg = d3.select(`#chart${slideIndex + 1}`);
+            svg.html(""); // Clear previous chart
+
+            const g = svg.append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            let xScale, yScale, xAxisLabel, yAxisLabel, xColumn, yColumn;
+            let totalCol, physCol, digCol, perPhysCol, perDigCol;
+
+            if (slideIndex === 0) {
+                xColumn = "PERPHYSCOLL";
+                yColumn = "PERDIGCOLL";
+                xAxisLabel = "Percentage Physical Collection Items";
+                yAxisLabel = "Percentage Digital Collection Items";
+                totalCol = "TOTCOLL";
+                physCol = "TOTPHYSCOLL";
+                digCol = "TOTDIGCOLL";
+                perPhysCol = "PERPHYSCOLL";
+                perDigCol = "PERDIGCOLL";
+            } else if (slideIndex === 1) {
+                xColumn = "PERPHYSCIR";
+                yColumn = "PERDIGCIR";
+                xAxisLabel = "Percentage Physical Collection Circulation";
+                yAxisLabel = "Percentage Digital Collection Circulation";
+                totalCol = "TOTCIR";
+                physCol = "PHYSCIR";
+                digCol = "DIGCIR";
+                perPhysCol = "PERPHYSCIR";
+                perDigCol = "PERDIGCIR";
+            } else if (slideIndex === 2) {
+                xColumn = "PERPHYSEXP";
+                yColumn = "PERDIGEXP";
+                xAxisLabel = "Percentage Physical Collection Expenditures";
+                yAxisLabel = "Percentage Digital Collection Expenditures";
+                totalCol = "TOTEXP";
+                physCol = "PHYSEXP";
+                digCol = "DIGEXP";
+                perPhysCol = "PERPHYSEXP";
+                perDigCol = "PERDIGEXP";
+            }
+
+            xScale = d3.scaleLinear()
+                .domain([0, 100]) // Percentages go from 0 to 100
+                .range([0, width]);
+
+            yScale = d3.scaleLinear()
+                .domain([0, 100])
+                .range([height, 0]);
+
+            const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+            // Add X axis
+            g.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(xScale));
+
+            // Add Y axis
+            g.append("g")
+                .call(d3.axisLeft(yScale));
+
+            // Add X axis label
+            g.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "middle")
+                .attr("x", width / 2)
+                .attr("y", height + margin.bottom - 10)
+                .text(xAxisLabel);
+
+            // Add Y axis label
+            g.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "middle")
+                .attr("y", -margin.left + 20) // Adjusted y position
+                .attr("x", -height / 2)
+                .attr("transform", "rotate(-90)")
+                .text(yAxisLabel);
+
+            // Filter data based on parameters
+            let filteredData = data;
+            if (params.selectedState !== "All") {
+                filteredData = data.filter(d => d.STATE === params.selectedState);
+            } else if (params.selectedRegion !== "All") {
+                filteredData = data.filter(d => d.REGION === params.selectedRegion);
+            }
+
+            // Draw points
+            const points = g.selectAll(".dot")
+                .data(filteredData, d => d.STATE) // Use state as key for smooth transitions
+                .join(
+                    enter => enter.append("circle")
+                        .attr("class", "dot")
+                        .attr("cx", d => xScale(d[xColumn]))
+                        .attr("cy", d => yScale(d[yColumn]))
+                        .attr("r", 5)
+                        .attr("fill", d => colorScale(d.REGION))
+                        .attr("opacity", 0.7)
+                        .on("mouseover", function(event, d) {
+                            d3.select(this).attr("stroke", "black").attr("stroke-width", 2);
+                            tooltip.transition()
+                                .duration(200)
+                                .style("opacity", .9);
+                            tooltip.html(`<strong>${d.STATE}</strong><br/>
+                                        Region: ${d.REGION}<br/>
+                                        Total: ${d[totalCol].toLocaleString()} <br/>
+                                        Physical: ${d[physCol].toLocaleString()} (${d[perPhysCol].toFixed(2)}%)<br/>
+                                        Digital: ${d[digCol].toLocaleString()} (${d[perDigCol].toFixed(2)}%)`)
+                                .style("left", (event.pageX + 10) + "px")
+                                .style("top", (event.pageY - 28) + "px");
+                        })
+                        .on("mouseout", function(event, d) {
+                            d3.select(this).attr("stroke", "none");
+                            tooltip.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        }),
+                    update => update
+                        .transition()
+                        .duration(500)
+                        .attr("cx", d => xScale(d[xColumn]))
+                        .attr("cy", d => yScale(d[yColumn]))
+                        .attr("fill", d => colorScale(d.REGION))
+                        .attr("opacity", 0.7),
+                    exit => exit.remove()
+                );
+            // Annotations (example, you'll need to define specific annotations)
+            // This is just a placeholder. You'll want to add annotations based on your data and messaging.
+            // For example, to highlight a specific state or a cluster of states.
+            // const annotations = [
+            //     {
+            //         note: {
+            //             label: "Example Annotation: High digital collection in California",
+            //             bgPadding: 20,
+            //             title: "California"
+            //         },
+            //         x: xScale(data.find(d => d.STATE === "California")[xColumn]),
+            //         y: yScale(data.find(d => d.STATE === "California")[yColumn]),
+            //         dx: 50,
+            //         dy: -50,
+            //         subject: { radius: 10,  },
+            //     }
+            // ];
+
+            // const makeAnnotations = d3.annotation()
+            //     .annotations(annotations);
+
+            // svg.append("g")
+            //     .attr("class", "annotation-group")
+            //     .call(makeAnnotations);
+
+
+             // Add a legend for regions
+            const uniqueRegions = Array.from(new Set(data.map(d => d.REGION))).sort();
+
+            const legend = svg.append("g")
+                .attr("class", "legend")
+                .attr("transform", `translate(${width + margin.right - 100}, 20)`); // Position of the legend
+
+            legend.selectAll("rect")
+                .data(uniqueRegions)
+                .enter()
+                .append("rect")
+                .attr("x", 0)
+                .attr("y", (d, i) => i * 20)
+                .attr("width", 10)
+                .attr("height", 10)
+                .attr("fill", d => colorScale(d));
+
+            legend.selectAll("text")
+                .data(uniqueRegions)
+                .enter()
+                .append("text")
+                .attr("x", 20)
+                .attr("y", (d, i) => i * 20 + 9)
+                .text(d => d)
+                .style("font-size", "12px");
+        }
+    </script>
+</body>
+</html>
