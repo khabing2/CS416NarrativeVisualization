@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>U.S. Public Library Physical and Digital Collections in 2022</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/d3-annotation/d3-annotation.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -69,7 +69,7 @@
             margin-right: 20px;
         }
         .filters {
-            width: 200px;
+            width: 200px; 
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -79,6 +79,30 @@
             padding: 8px;
             border-radius: 4px;
             border: 1px solid #ccc;
+        }
+        
+        .annotation-group .annotation text {
+            font-size: 12px;
+            fill: #333;
+        }
+        
+        .annotation-group .annotation-note-bg {
+            fill: white;
+            fill-opacity: 0.9;
+            stroke: #ccc;
+            stroke-width: 1;
+        }
+        
+        .annotation-group .annotation path {
+            stroke: #333;
+            stroke-width: 2;
+            fill: none;
+        }
+        
+        .annotation-group .annotation circle {
+            stroke: #333;
+            stroke-width: 2;
+            fill: none;
         }
     </style>
 </head>
@@ -164,10 +188,9 @@
     <script>
         let currentSlide = 0;
         const slides = ['slide1', 'slide2', 'slide3', 'conclusion'];
-        let data; 
+        let data; // To store the loaded data
         let colorScale; 
 
-        // Parameters for the visualization
         const params = {
             selectedState: "All",
             selectedRegion: "All",
@@ -195,6 +218,7 @@
             });
             params.activeSlide = index;
             
+            // Reset filters when switching slides
             params.selectedState = "All";
             params.selectedRegion = "All";
             
@@ -229,7 +253,7 @@
 
             const uniqueRegions = Array.from(new Set(data.map(d => d.REGION))).sort();
             colorScale = d3.scaleOrdinal(d3.schemeCategory10)
-                .domain(uniqueRegions); // Set the domain to all regions
+                .domain(uniqueRegions); 
 
             // filters
             const states = ["All", ...new Set(data.map(d => d.STATE))].sort();
@@ -254,7 +278,7 @@
 
                 stateFilter.on("change", function() {
                     params.selectedState = this.value;
-                    params.selectedRegion = "All";
+                    params.selectedRegion = "All"; 
                     d3.select(`#regionFilter${i}`).property("value", "All");
                     renderChart(i - 1);
                 });
@@ -345,7 +369,7 @@
             g.append("text")
                 .attr("class", "y label")
                 .attr("text-anchor", "middle")
-                .attr("y", -margin.left + 20) // Adjusted y position
+                .attr("y", -margin.left + 20) 
                 .attr("x", -height / 2)
                 .attr("transform", "rotate(-90)")
                 .text(yAxisLabel);
@@ -367,7 +391,7 @@
                         .attr("cx", d => xScale(d[xColumn]))
                         .attr("cy", d => yScale(d[yColumn]))
                         .attr("r", 5)
-                        .attr("fill", d => colorScale(d.REGION))
+                        .attr("fill", d => colorScale(d.REGION)) 
                         .attr("opacity", 0.7)
                         .on("mouseover", function(event, d) {
                             d3.select(this).attr("stroke", "black").attr("stroke-width", 2);
@@ -426,7 +450,7 @@
             // Annotations
             let annotations = [];
             
-            if (slideIndex === 0) { // Collections slide
+            if (slideIndex === 0) { 
                 const maxDigitalState = data.reduce((max, d) => d.PERDIGCOLL > max.PERDIGCOLL ? d : max);
                 const minDigitalState = data.reduce((min, d) => d.PERDIGCOLL < min.PERDIGCOLL ? d : min);
                 
@@ -441,8 +465,7 @@
                         y: yScale(maxDigitalState[yColumn]),
                         dx: -80,
                         dy: -50,
-                        subject: { radius: 8 },
-                        type: d3.annotationCalloutCircle
+                        subject: { radius: 8 }
                     },
                     {
                         note: {
@@ -454,8 +477,7 @@
                         y: yScale(minDigitalState[yColumn]),
                         dx: 80,
                         dy: 50,
-                        subject: { radius: 8 },
-                        type: d3.annotationCalloutCircle
+                        subject: { radius: 8 }
                     }
                 ];
             } else if (slideIndex === 1) { 
@@ -473,8 +495,7 @@
                         y: yScale(maxDigitalCircState[yColumn]),
                         dx: -100,
                         dy: -60,
-                        subject: { radius: 8 },
-                        type: d3.annotationCalloutCircle
+                        subject: { radius: 8 }
                     },
                     {
                         note: {
@@ -486,11 +507,10 @@
                         y: yScale(minDigitalCircState[yColumn]),
                         dx: 80,
                         dy: 50,
-                        subject: { radius: 8 },
-                        type: d3.annotationCalloutCircle
+                        subject: { radius: 8 }
                     }
                 ];
-            } else if (slideIndex === 2) { // Expenditures slide
+            } else if (slideIndex === 2) { 
                 const maxDigitalExpState = data.reduce((max, d) => d.PERDIGEXP > max.PERDIGEXP ? d : max);
                 const minDigitalExpState = data.reduce((min, d) => d.PERDIGEXP < min.PERDIGEXP ? d : min);
                 
@@ -505,8 +525,7 @@
                         y: yScale(maxDigitalExpState[yColumn]),
                         dx: -80,
                         dy: -50,
-                        subject: { radius: 8 },
-                        type: d3.annotationCalloutCircle
+                        subject: { radius: 8 }
                     },
                     {
                         note: {
@@ -518,19 +537,33 @@
                         y: yScale(minDigitalExpState[yColumn]),
                         dx: 80,
                         dy: 50,
-                        subject: { radius: 8 },
-                        type: d3.annotationCalloutCircle
+                        subject: { radius: 8 }
                     }
                 ];
             }
 
             if (annotations.length > 0 && params.selectedState === "All" && params.selectedRegion === "All") {
-                const makeAnnotations = d3.annotation()
-                    .annotations(annotations);
+                console.log("Adding annotations for slide", slideIndex + 1, ":", annotations.length, "annotations");
+                console.log("Annotations:", annotations);
+                
+                try {
+                    const makeAnnotations = d3.annotation()
+                        .type(d3.annotationCallout)
+                        .annotations(annotations);
 
-                g.append("g")
-                    .attr("class", "annotation-group")
-                    .call(makeAnnotations);
+                    g.append("g")
+                        .attr("class", "annotation-group")
+                        .call(makeAnnotations);
+                    
+                    console.log("Annotations added successfully");
+                } catch (error) {
+                    console.error("Error adding annotations:", error);
+                }
+            } else {
+                console.log("No annotations added - either no annotations defined or filters are active");
+                console.log("Annotations length:", annotations.length);
+                console.log("Selected state:", params.selectedState);
+                console.log("Selected region:", params.selectedRegion);
             }
         }
     </script>
