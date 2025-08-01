@@ -61,15 +61,15 @@
         }
         .chart-container {
             display: flex;
-            align-items: flex-start; /* Align items to the top */
+            align-items: flex-start; 
         }
         .scatter-plot {
-            flex-grow: 1; /* Take up available space */
+            flex-grow: 1; 
             border: 1px solid #eee;
             margin-right: 20px;
         }
         .filters {
-            width: 200px; /* Fixed width for filters */
+            width: 200px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -194,7 +194,14 @@
                 document.getElementById(slideId).style.display = (i === index) ? 'block' : 'none';
             });
             params.activeSlide = index;
+            
+            params.selectedState = "All";
+            params.selectedRegion = "All";
+            
             if (index < 3) { 
+                // Reset the filter dropdowns for the current slide
+                d3.select(`#stateFilter${index + 1}`).property("value", "All");
+                d3.select(`#regionFilter${index + 1}`).property("value", "All");
                 renderChart(index);
             }
         }
@@ -202,7 +209,7 @@
         // Load data
         d3.csv("https://raw.githubusercontent.com/khabing2/CS416NarrativeVisualization/2c7f98158419bcb7a34ea59545d19fc0bf25068b/state_sums.csv").then(loadedData => {
             data = loadedData;
-            // Convert columns to numbers
+            // Convert necessary columns to numbers
             data.forEach(d => {
                 d.PHYSEXP = +d.PHYSEXP;
                 d.DIGEXP = +d.DIGEXP;
@@ -270,7 +277,7 @@
             const height = 400 - margin.top - margin.bottom;
 
             const svg = d3.select(`#chart${slideIndex + 1}`);
-            svg.html(""); // Clear previous chart
+            svg.html(""); 
 
             const g = svg.append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -311,7 +318,7 @@
             }
 
             xScale = d3.scaleLinear()
-                .domain([0, 100]) // Percentages go from 0 to 100
+                .domain([0, 100]) 
                 .range([0, width]);
 
             yScale = d3.scaleLinear()
@@ -354,7 +361,7 @@
 
             // Draw points
             const points = g.selectAll(".dot")
-                .data(filteredData, d => d.STATE) // Use state as key for smooth transitions
+                .data(filteredData, d => d.STATE) 
                 .join(
                     enter => enter.append("circle")
                         .attr("class", "dot")
@@ -387,7 +394,7 @@
                         .duration(500)
                         .attr("cx", d => xScale(d[xColumn]))
                         .attr("cy", d => yScale(d[yColumn]))
-                        .attr("fill", d => colorScale(d.REGION)) // Use global color scale
+                        .attr("fill", d => colorScale(d.REGION)) 
                         .attr("opacity", 0.7),
                     exit => exit.remove()
                 );
@@ -396,7 +403,7 @@
 
             const legend = svg.append("g")
                 .attr("class", "legend")
-                .attr("transform", `translate(${width + margin.right - 100}, 20)`);
+                .attr("transform", `translate(${width + margin.right - 100}, 20)`); 
 
             legend.selectAll("rect")
                 .data(uniqueRegions)
@@ -406,7 +413,7 @@
                 .attr("y", (d, i) => i * 20)
                 .attr("width", 10)
                 .attr("height", 10)
-                .attr("fill", d => colorScale(d)); // Use global color scale
+                .attr("fill", d => colorScale(d)); 
 
             legend.selectAll("text")
                 .data(uniqueRegions)
