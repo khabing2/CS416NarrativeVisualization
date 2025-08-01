@@ -27,7 +27,7 @@
             background-color: #f9f9f9;
         }
         .slide {
-            display: none;
+            display: none; 
             margin-top: 20px;
         }
         .controls {
@@ -69,7 +69,7 @@
             margin-right: 20px;
         }
         .filters {
-            width: 200px; 
+            width: 200px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -254,7 +254,7 @@
 
                 stateFilter.on("change", function() {
                     params.selectedState = this.value;
-                    params.selectedRegion = "All"; 
+                    params.selectedRegion = "All";
                     d3.select(`#regionFilter${i}`).property("value", "All");
                     renderChart(i - 1);
                 });
@@ -271,7 +271,7 @@
         });
 
         function renderChart(slideIndex) {
-            const margin = { top: 40, right: 30, bottom: 60, left: 70 };
+            const margin = { top: 40, right: 30, bottom: 60, left: 70 }; 
             const width = 600 - margin.left - margin.right;
             const height = 400 - margin.top - margin.bottom;
 
@@ -345,7 +345,7 @@
             g.append("text")
                 .attr("class", "y label")
                 .attr("text-anchor", "middle")
-                .attr("y", -margin.left + 20) 
+                .attr("y", -margin.left + 20) // Adjusted y position
                 .attr("x", -height / 2)
                 .attr("transform", "rotate(-90)")
                 .text(yAxisLabel);
@@ -367,7 +367,7 @@
                         .attr("cx", d => xScale(d[xColumn]))
                         .attr("cy", d => yScale(d[yColumn]))
                         .attr("r", 5)
-                        .attr("fill", d => colorScale(d.REGION)) 
+                        .attr("fill", d => colorScale(d.REGION))
                         .attr("opacity", 0.7)
                         .on("mouseover", function(event, d) {
                             d3.select(this).attr("stroke", "black").attr("stroke-width", 2);
@@ -393,7 +393,7 @@
                         .duration(500)
                         .attr("cx", d => xScale(d[xColumn]))
                         .attr("cy", d => yScale(d[yColumn]))
-                        .attr("fill", d => colorScale(d.REGION)) // Use global color scale
+                        .attr("fill", d => colorScale(d.REGION)) 
                         .attr("opacity", 0.7),
                     exit => exit.remove()
                 );
@@ -422,6 +422,116 @@
                 .attr("y", (d, i) => i * 20 + 9)
                 .text(d => d)
                 .style("font-size", "12px");
+
+            // Annotations
+            let annotations = [];
+            
+            if (slideIndex === 0) { // Collections slide
+                const maxDigitalState = data.reduce((max, d) => d.PERDIGCOLL > max.PERDIGCOLL ? d : max);
+                const minDigitalState = data.reduce((min, d) => d.PERDIGCOLL < min.PERDIGCOLL ? d : min);
+                
+                annotations = [
+                    {
+                        note: {
+                            label: "Indiana's library collections have the highest percentage of digital to physical materials.",
+                            bgPadding: 10,
+                            title: "Highest Digital Collection %"
+                        },
+                        x: xScale(maxDigitalState[xColumn]),
+                        y: yScale(maxDigitalState[yColumn]),
+                        dx: -80,
+                        dy: -50,
+                        subject: { radius: 8 },
+                        type: d3.annotationCalloutCircle
+                    },
+                    {
+                        note: {
+                            label: "The American Samoa's collections have the lowest percentage of digital to physical materials.",
+                            bgPadding: 10,
+                            title: "Lowest Digital Collection %"
+                        },
+                        x: xScale(minDigitalState[xColumn]),
+                        y: yScale(minDigitalState[yColumn]),
+                        dx: 80,
+                        dy: 50,
+                        subject: { radius: 8 },
+                        type: d3.annotationCalloutCircle
+                    }
+                ];
+            } else if (slideIndex === 1) { 
+                const maxDigitalCircState = data.reduce((max, d) => d.PERDIGCIR > max.PERDIGCIR ? d : max);
+                const minDigitalCircState = data.reduce((min, d) => d.PERDIGCIR < min.PERDIGCIR ? d : min);
+                
+                annotations = [
+                    {
+                        note: {
+                            label: "While the American Samoa's collections has the lowest percentage of digital collections, the percent of their item circulation which are digital is the highest.",
+                            bgPadding: 10,
+                            title: "Highest Digital Circulation %"
+                        },
+                        x: xScale(maxDigitalCircState[xColumn]),
+                        y: yScale(maxDigitalCircState[yColumn]),
+                        dx: -100,
+                        dy: -60,
+                        subject: { radius: 8 },
+                        type: d3.annotationCalloutCircle
+                    },
+                    {
+                        note: {
+                            label: "Connecticut has the lowest percentage of digital to physical circulation.",
+                            bgPadding: 10,
+                            title: "Lowest Digital Circulation %"
+                        },
+                        x: xScale(minDigitalCircState[xColumn]),
+                        y: yScale(minDigitalCircState[yColumn]),
+                        dx: 80,
+                        dy: 50,
+                        subject: { radius: 8 },
+                        type: d3.annotationCalloutCircle
+                    }
+                ];
+            } else if (slideIndex === 2) { // Expenditures slide
+                const maxDigitalExpState = data.reduce((max, d) => d.PERDIGEXP > max.PERDIGEXP ? d : max);
+                const minDigitalExpState = data.reduce((min, d) => d.PERDIGEXP < min.PERDIGEXP ? d : min);
+                
+                annotations = [
+                    {
+                        note: {
+                            label: "Florida spends the largest percent of their collection expenditures on digital items.",
+                            bgPadding: 10,
+                            title: "Highest Digital Expenditure %"
+                        },
+                        x: xScale(maxDigitalExpState[xColumn]),
+                        y: yScale(maxDigitalExpState[yColumn]),
+                        dx: -80,
+                        dy: -50,
+                        subject: { radius: 8 },
+                        type: d3.annotationCalloutCircle
+                    },
+                    {
+                        note: {
+                            label: "Guam spends the smallest percent of their collection expenditures on digital items.",
+                            bgPadding: 10,
+                            title: "Lowest Digital Expenditure %"
+                        },
+                        x: xScale(minDigitalExpState[xColumn]),
+                        y: yScale(minDigitalExpState[yColumn]),
+                        dx: 80,
+                        dy: 50,
+                        subject: { radius: 8 },
+                        type: d3.annotationCalloutCircle
+                    }
+                ];
+            }
+
+            if (annotations.length > 0 && params.selectedState === "All" && params.selectedRegion === "All") {
+                const makeAnnotations = d3.annotation()
+                    .annotations(annotations);
+
+                g.append("g")
+                    .attr("class", "annotation-group")
+                    .call(makeAnnotations);
+            }
         }
     </script>
 </body>
