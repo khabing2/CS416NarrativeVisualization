@@ -27,7 +27,7 @@
             background-color: #f9f9f9;
         }
         .slide {
-            display: none; 
+            display: none;
             margin-top: 20px;
         }
         .controls {
@@ -69,7 +69,7 @@
             margin-right: 20px;
         }
         .filters {
-            width: 200px;
+            width: 200px; 
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -199,7 +199,6 @@
             params.selectedRegion = "All";
             
             if (index < 3) { 
-                // Reset the filter dropdowns for the current slide
                 d3.select(`#stateFilter${index + 1}`).property("value", "All");
                 d3.select(`#regionFilter${index + 1}`).property("value", "All");
                 renderChart(index);
@@ -272,7 +271,7 @@
         });
 
         function renderChart(slideIndex) {
-            const margin = { top: 40, right: 30, bottom: 60, left: 70 }; 
+            const margin = { top: 40, right: 30, bottom: 60, left: 70 };
             const width = 600 - margin.left - margin.right;
             const height = 400 - margin.top - margin.bottom;
 
@@ -346,7 +345,7 @@
             g.append("text")
                 .attr("class", "y label")
                 .attr("text-anchor", "middle")
-                .attr("y", -margin.left + 20) // Adjusted y position
+                .attr("y", -margin.left + 20) 
                 .attr("x", -height / 2)
                 .attr("transform", "rotate(-90)")
                 .text(yAxisLabel);
@@ -368,7 +367,7 @@
                         .attr("cx", d => xScale(d[xColumn]))
                         .attr("cy", d => yScale(d[yColumn]))
                         .attr("r", 5)
-                        .attr("fill", d => colorScale(d.REGION)) // Use global color scale
+                        .attr("fill", d => colorScale(d.REGION)) 
                         .attr("opacity", 0.7)
                         .on("mouseover", function(event, d) {
                             d3.select(this).attr("stroke", "black").attr("stroke-width", 2);
@@ -394,7 +393,7 @@
                         .duration(500)
                         .attr("cx", d => xScale(d[xColumn]))
                         .attr("cy", d => yScale(d[yColumn]))
-                        .attr("fill", d => colorScale(d.REGION)) 
+                        .attr("fill", d => colorScale(d.REGION)) // Use global color scale
                         .attr("opacity", 0.7),
                     exit => exit.remove()
                 );
