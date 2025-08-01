@@ -27,7 +27,7 @@
             background-color: #f9f9f9;
         }
         .slide {
-            display: none; /* Hidden by default */
+            display: none; 
             margin-top: 20px;
         }
         .controls {
@@ -94,7 +94,7 @@
 
         <div id="slide1" class="slide">
             <h2>Physical and Digital Collection Materials</h2>
-            <p>The scatter plot below shows percentages of physical and digital library collections materials in U.S. states and territories. Hover over each point to see specific information about the state’s collections. Click on a state name or region name on the right to select a specific state or region. Click Next to go to the next slide.</p>
+            <p>The scatter plot below shows percentages of physical and digital library collections materials in U.S. states and territories. Hover over each point to see specific information about the state's collections. Click on a state name or region name on the right to select a specific state or region. Click Next to go to the next slide.</p>
             <div class="chart-container">
                 <svg class="scatter-plot" id="chart1" width="600" height="400"></svg>
                 <div class="filters">
@@ -115,7 +115,7 @@
 
         <div id="slide2" class="slide">
             <h2>Physical and Digital Collection Circulation</h2>
-            <p>The scatter plot below shows percentages of the circulation of library physical and digital collections in U.S. states and territories. Hover over each point to see specific information about the state’s collections. Click on a state name or region name on the right to select a specific state or region. Click Next to go to the next slide.</p>
+            <p>The scatter plot below shows percentages of the circulation of library physical and digital collections in U.S. states and territories. Hover over each point to see specific information about the state's collections. Click on a state name or region name on the right to select a specific state or region. Click Next to go to the next slide.</p>
             <div class="chart-container">
                 <svg class="scatter-plot" id="chart2" width="600" height="400"></svg>
                 <div class="filters">
@@ -136,7 +136,7 @@
 
         <div id="slide3" class="slide">
             <h2>Physical and Digital Collection Expenditures</h2>
-            <p>The scatter plot below shows percentages of expenditures on library physical and digital collections in U.S. states and territories. Hover over each point to see specific information about the state’s collections. Click on a state name or region name on the right to select a specific state or region. Click Next to finish the narrative.</p>
+            <p>The scatter plot below shows percentages of expenditures on library physical and digital collections in U.S. states and territories. Hover over each point to see specific information about the state's collections. Click on a state name or region name on the right to select a specific state or region. Click Next to finish the narrative.</p>
             <div class="chart-container">
                 <svg class="scatter-plot" id="chart3" width="600" height="400"></svg>
                 <div class="filters">
@@ -164,7 +164,8 @@
     <script>
         let currentSlide = 0;
         const slides = ['slide1', 'slide2', 'slide3', 'conclusion'];
-        let data; // To store the loaded data
+        let data; 
+        let colorScale; 
 
         // Parameters for the visualization
         const params = {
@@ -180,28 +181,28 @@
 
         document.getElementById('startButton').addEventListener('click', () => {
             document.getElementById('startButton').style.display = 'none';
-            document.querySelector('.container .controls').style.display = 'none'; // Hide the initial controls
+            document.querySelector('.container .controls').style.display = 'none'; 
             showSlide(0);
         });
 
         document.getElementById('nextButton1').addEventListener('click', () => showSlide(1));
         document.getElementById('nextButton2').addEventListener('click', () => showSlide(2));
-        document.getElementById('nextButton3').addEventListener('click', () => showSlide(3)); // This will show the conclusion
+        document.getElementById('nextButton3').addEventListener('click', () => showSlide(3)); 
 
         function showSlide(index) {
             slides.forEach((slideId, i) => {
                 document.getElementById(slideId).style.display = (i === index) ? 'block' : 'none';
             });
             params.activeSlide = index;
-            if (index < 3) { // Only render chart if it's a visualization slide
+            if (index < 3) { 
                 renderChart(index);
             }
         }
 
-        // Load data and initialize
+        // Load data
         d3.csv("https://raw.githubusercontent.com/khabing2/CS416NarrativeVisualization/2c7f98158419bcb7a34ea59545d19fc0bf25068b/state_sums.csv").then(loadedData => {
             data = loadedData;
-            // Convert necessary columns to numbers
+            // Convert columns to numbers
             data.forEach(d => {
                 d.PHYSEXP = +d.PHYSEXP;
                 d.DIGEXP = +d.DIGEXP;
@@ -220,9 +221,13 @@
                 d.PERDIGCIR = +d.PERDIGCIR;
             });
 
+            const uniqueRegions = Array.from(new Set(data.map(d => d.REGION))).sort();
+            colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+                .domain(uniqueRegions); // Set the domain to all regions
+
             // filters
             const states = ["All", ...new Set(data.map(d => d.STATE))].sort();
-            const regions = ["All", ...new Set(data.map(d => d.REGION))].sort();
+            const regions = ["All", ...uniqueRegions];
 
             for (let i = 1; i <= 3; i++) {
                 const stateFilter = d3.select(`#stateFilter${i}`);
@@ -243,14 +248,14 @@
 
                 stateFilter.on("change", function() {
                     params.selectedState = this.value;
-                    params.selectedRegion = "All"; // Reset region filter
+                    params.selectedRegion = "All"; 
                     d3.select(`#regionFilter${i}`).property("value", "All");
                     renderChart(i - 1);
                 });
 
                 regionFilter.on("change", function() {
                     params.selectedRegion = this.value;
-                    params.selectedState = "All"; // Reset state filter
+                    params.selectedState = "All"; 
                     d3.select(`#stateFilter${i}`).property("value", "All");
                     renderChart(i - 1);
                 });
@@ -260,7 +265,7 @@
         });
 
         function renderChart(slideIndex) {
-            const margin = { top: 40, right: 30, bottom: 60, left: 70 }; // Increased top margin for title
+            const margin = { top: 40, right: 30, bottom: 60, left: 70 }; 
             const width = 600 - margin.left - margin.right;
             const height = 400 - margin.top - margin.bottom;
 
@@ -313,8 +318,6 @@
                 .domain([0, 100])
                 .range([height, 0]);
 
-            const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
             // Add X axis
             g.append("g")
                 .attr("transform", `translate(0,${height})`)
@@ -358,7 +361,7 @@
                         .attr("cx", d => xScale(d[xColumn]))
                         .attr("cy", d => yScale(d[yColumn]))
                         .attr("r", 5)
-                        .attr("fill", d => colorScale(d.REGION))
+                        .attr("fill", d => colorScale(d.REGION)) // Use global color scale
                         .attr("opacity", 0.7)
                         .on("mouseover", function(event, d) {
                             d3.select(this).attr("stroke", "black").attr("stroke-width", 2);
@@ -384,42 +387,16 @@
                         .duration(500)
                         .attr("cx", d => xScale(d[xColumn]))
                         .attr("cy", d => yScale(d[yColumn]))
-                        .attr("fill", d => colorScale(d.REGION))
+                        .attr("fill", d => colorScale(d.REGION)) // Use global color scale
                         .attr("opacity", 0.7),
                     exit => exit.remove()
                 );
-            // Annotations (example, you'll need to define specific annotations)
-            // This is just a placeholder. You'll want to add annotations based on your data and messaging.
-            // For example, to highlight a specific state or a cluster of states.
-            // const annotations = [
-            //     {
-            //         note: {
-            //             label: "Example Annotation: High digital collection in California",
-            //             bgPadding: 20,
-            //             title: "California"
-            //         },
-            //         x: xScale(data.find(d => d.STATE === "California")[xColumn]),
-            //         y: yScale(data.find(d => d.STATE === "California")[yColumn]),
-            //         dx: 50,
-            //         dy: -50,
-            //         subject: { radius: 10,  },
-            //     }
-            // ];
 
-            // const makeAnnotations = d3.annotation()
-            //     .annotations(annotations);
-
-            // svg.append("g")
-            //     .attr("class", "annotation-group")
-            //     .call(makeAnnotations);
-
-
-             // Add a legend for regions
             const uniqueRegions = Array.from(new Set(data.map(d => d.REGION))).sort();
 
             const legend = svg.append("g")
                 .attr("class", "legend")
-                .attr("transform", `translate(${width + margin.right - 100}, 20)`); // Position of the legend
+                .attr("transform", `translate(${width + margin.right - 100}, 20)`);
 
             legend.selectAll("rect")
                 .data(uniqueRegions)
@@ -429,7 +406,7 @@
                 .attr("y", (d, i) => i * 20)
                 .attr("width", 10)
                 .attr("height", 10)
-                .attr("fill", d => colorScale(d));
+                .attr("fill", d => colorScale(d)); // Use global color scale
 
             legend.selectAll("text")
                 .data(uniqueRegions)
